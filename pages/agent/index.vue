@@ -19,7 +19,7 @@ export default {
       height: window.innerHeight
     }
 
-    this.initJitsi('agent', config)
+    this.initJitsi('agent', 'meet.jit.si', config)
   }
 }
 </script>

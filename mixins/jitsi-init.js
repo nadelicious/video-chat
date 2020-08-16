@@ -8,12 +8,12 @@ export default {
   },
 
   methods: {
-    initJitsi(type, options) {
+    initJitsi(type, domain, options) {
       let config = jitsiConfig
 
       config = { ...config, ...options }
       // eslint-disable-next-line no-undef
-      this.jitsiApi = new JitsiMeetExternalAPI('hmuresan.jitsi.net', config)
+      this.jitsiApi = new JitsiMeetExternalAPI(domain, config)
     }
   }
 }

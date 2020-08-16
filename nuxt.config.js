@@ -17,7 +17,7 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
       {
-        src: 'https://hmuresan.jitsi.net/libs/external_api.min.js',
+        src: 'https://meet.jit.si/external_api.js',
         body: true
       }
     ]
