@@ -1,6 +1,46 @@
 <template>
   <div class="w-100 h-100 guest">
     <div id="gc" class="guest__container" />
+    <div class="guest__controls fixed z-10 text-center">
+      <div class="flex flex-col items-center justify-center">
+        <button
+          class="outline-none block bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="toggleCamera"
+        >
+          <i :class="cameraSwitched ? 'icon-refresh-ccw' : 'icon-refresh-cw'" />
+        </button>
+        <button
+          class="outline-none mt-5 block bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="toggleAudio"
+        >
+          <i :class="audioMuted ? 'icon-mic-off' : 'icon-mic'" />
+        </button>
+
+        <button
+          class="outline-none block mt-5 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="toggleVideo"
+        >
+          <i :class="videoMuted ? 'icon-video-off' : 'icon-video'" />
+        </button>
+
+        <button
+          class="outline-none block mt-5 bg-red-400 hover:bg-red-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="endCall"
+        >
+          <i class="icon-phone-off" />
+        </button>
+      </div>
+    </div>
+    <div class="snapshot__controls fixed z-10 text-center">
+      <div class="flex items-center justify-center">
+        <button
+          class="outline-none border solid border-gray-500 block mr-5 bg-white hover:bg-gray-100 text-black font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="takePic"
+        >
+          <i class="icon-camera" />
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,6 +51,15 @@ export default {
   name: 'Guest',
 
   mixins: [JitsiInitMixin],
+
+  data() {
+    return {
+      participants: [],
+      audioMuted: false,
+      videoMuted: false,
+      cameraSwitched: false
+    }
+  },
 
   mounted() {
     const config = {
@@ -25,19 +74,124 @@ export default {
       'endpointTextMessageReceived',
       this.recieveEndPointTextMessage
     )
+
+    this.jitsiApi.on('audioMuteStatusChanged', this.checkAudioMuteStatus)
+    this.jitsiApi.on('videoMuteStatusChanged', this.checkVideoMuteStatus)
   },
 
   beforeDestroy() {
-    this.jitsiApi.off(
-      'endpointTextMessageReceived',
-      this.recieveEndPointTextMessage
-    )
+    this.removeListeners()
   },
 
   methods: {
-    recieveEndPointTextMessage(data) {
-      console.log(data)
+    recieveEndPointTextMessage(obj) {
+      const { data } = obj
+      const { eventData } = data
+      const { text } = eventData
+
+      if (text.startsWith('command:')) {
+        const cmd = text.split(':')
+
+        switch (cmd[1]) {
+          case 'toggleAudio': {
+            this.jitsiApi.executeCommand('toggleAudio')
+            break
+          }
+
+          case 'toggleVideo': {
+            this.jitsiApi.executeCommand('toggleVideo')
+            break
+          }
+
+          case 'toggleCamera': {
+            this.toggleCamera()
+            // this.jitsiApi.setVideoInputDevice(deviceLabel, deviceId);
+            break
+          }
+
+          default:
+        }
+      }
+    },
+
+    async toggleCamera() {
+      try {
+        const isDeviceListAvailable = await this.jitsiApi.isDeviceListAvailable()
+
+        if (!isDeviceListAvailable) {
+          throw new Error('Device list is not available.')
+        }
+
+        const isDeviceChangeAvailable = await this.jitsiApi.isDeviceChangeAvailable(
+          'input'
+        )
+
+        if (!isDeviceChangeAvailable) {
+          throw new Error('Device change is not available.')
+        }
+
+        const devices = await this.jitsiApi.getAvailableDevices()
+        const { videoInput } = devices
+
+        if (!videoInput) {
+          throw new Error('No video input available.')
+        }
+
+        if (videoInput && videoInput.length < 2) {
+          throw new Error('You have only one video input.')
+        }
+
+        const videoInputs = videoInput
+        const currentDevices = await this.jitsiApi.getCurrentDevices()
+        const { videoInput: vi } = currentDevices
+
+        console.log('***video inputs***', videoInputs)
+
+        const currentVideoInput = vi
+
+        console.log('***current video input***', currentVideoInput)
+      } catch (e) {
+        this.$message.error(e.message || 'Unable to switch camera')
+      }
+    },
+
+    checkAudioMuteStatus({ muted }) {
+      this.audioMuted = muted
+    },
+
+    checkVideoMuteStatus({ muted }) {
+      this.audioMuted = muted
+    },
+
+    endCall() {
+      this.removeListeners()
+      this.jitsiApi.dispose()
+      this.$router.push('/')
+    },
+
+    takePic() {},
+
+    removeListeners() {
+      this.jitsiApi.off('audioMuteStatusChanged', this.checkAudioMuteStatus)
+      this.jitsiApi.off('videoMuteStatusChanged', this.checkVideoMuteStatus)
+      this.jitsiApi.off(
+        'endpointTextMessageReceived',
+        this.recieveEndPointTextMessage
+      )
     }
   }
 }
 </script>
+<style scoped>
+.guest__controls {
+  top: 50%;
+  transform: translateY(-50%);
+  left: 20px;
+}
+
+.snapshot__controls {
+  bottom: 40px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+</style>
