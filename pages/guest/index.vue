@@ -140,6 +140,8 @@ export default {
         const devices = await this.jitsiApi.getAvailableDevices()
         const { videoInput } = devices
 
+        console.log('***video inputs***', videoInput)
+
         if (!videoInput) {
           throw new Error('No video input available.')
         }
@@ -152,11 +154,51 @@ export default {
         const currentDevices = await this.jitsiApi.getCurrentDevices()
         const { videoInput: vi } = currentDevices
 
-        console.log('***video inputs***', videoInputs)
-
         const currentVideoInput = vi
 
         console.log('***current video input***', currentVideoInput)
+
+        if (currentVideoInput.label && currentVideoInput.label.match(/back/i)) {
+          const otherVideoInput = videoInputs.find(
+            (v) => v.label && v.label.match(/front/i)
+          )
+
+          if (otherVideoInput) {
+            const { deviceId, label } = otherVideoInput
+            this.jitsiApi.setVideoInputDevice(label, deviceId)
+          } else {
+            throw new Error('Unable to match camera label.')
+          }
+        } else if (
+          currentVideoInput.label &&
+          currentVideoInput.label.match(/front/i)
+        ) {
+          const otherVideoInput = videoInputs.find(
+            (v) => v.label && v.label.match(/back/i)
+          )
+
+          if (otherVideoInput) {
+            const { deviceId, label } = otherVideoInput
+            this.jitsiApi.setVideoInputDevice(label, deviceId)
+          } else {
+            throw new Error('Unable to match camera label.')
+          }
+        } else {
+          const otherVideoInput = videoInputs.find(
+            (v) =>
+              v.label &&
+              v.deviceId &&
+              currentVideoInput.label &&
+              v.deviceId !== currentVideoInput.deviceId
+          )
+
+          if (otherVideoInput) {
+            const { deviceId, label } = otherVideoInput
+            this.jitsiApi.setVideoInputDevice(label, deviceId)
+          } else {
+            throw new Error('Unable to find device id.')
+          }
+        }
       } catch (e) {
         this.$message.error(e.message || 'Unable to switch camera')
       }
