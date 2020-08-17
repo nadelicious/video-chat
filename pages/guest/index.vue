@@ -20,6 +20,24 @@ export default {
     }
 
     this.initJitsi('agent', 'meet.jit.si', config)
+
+    this.jitsiApi.on(
+      'endpointTextMessageReceived',
+      this.recieveEndPointTextMessage
+    )
+  },
+
+  beforeDestroy() {
+    this.jitsiApi.off(
+      'endpointTextMessageReceived',
+      this.recieveEndPointTextMessage
+    )
+  },
+
+  methods: {
+    recieveEndPointTextMessage(data) {
+      console.log(data)
+    }
   }
 }
 </script>
