@@ -154,7 +154,11 @@ export default {
         const currentDevices = await this.jitsiApi.getCurrentDevices()
         const { videoInput: vi } = currentDevices
 
-        const currentVideoInput = vi
+        const currentVideoInput = vi || videoInputs[0]
+
+        if (!vi) {
+          console.log('***uses workaround ***', currentVideoInput)
+        }
 
         console.log('***current video input***', currentVideoInput)
 
