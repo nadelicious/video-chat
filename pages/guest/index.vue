@@ -218,8 +218,6 @@ export default {
       this.$router.push('/')
     },
 
-    takePic() {},
-
     removeListeners() {
       this.jitsiApi.off('audioMuteStatusChanged', this.checkAudioMuteStatus)
       this.jitsiApi.off('videoMuteStatusChanged', this.checkVideoMuteStatus)
