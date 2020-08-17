@@ -65,7 +65,14 @@ export default {
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      interfaceConfigOverwrite: {
+        // This property allows setting only specific UI elements on the iframe. In our case
+        // we disable all the UI elements. For enabling it them, remove this prop.
+        // For a list of all UI elements, please consult the api documentation on github
+        TOOLBAR_BUTTONS: [],
+        MOBILE_APP_PROMO: true
+      }
     }
 
     this.initJitsi('agent', 'meet.jit.si', config)
