@@ -88,6 +88,7 @@ export default {
       width: window.innerWidth,
       height: window.innerHeight,
       configOverwrite: {
+        resolution: 320,
         videoQuality: {
           // Provides a way to configure the maximum bitrates that will be enforced on the simulcast streams for
           // video tracks. The keys in the object represent the type of the stream (LD, SD or HD) and the values
