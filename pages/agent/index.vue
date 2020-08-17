@@ -86,7 +86,21 @@ export default {
     const config = {
       parentNode: document.getElementById('ac'),
       width: window.innerWidth,
-      height: window.innerHeight
+      height: window.innerHeight,
+      configOverwrite: {
+        videoQuality: {
+          // Provides a way to configure the maximum bitrates that will be enforced on the simulcast streams for
+          // video tracks. The keys in the object represent the type of the stream (LD, SD or HD) and the values
+          // are the max.bitrates to be set on that particular type of stream. The actual send may vary based on
+          // the available bandwidth calculated by the browser, but it will be capped by the values specified here.
+          // This is currently not implemented on app based clients on mobile.
+          maxBitratesVideo: {
+            low: 100000,
+            standard: 200000,
+            high: 200000
+          }
+        }
+      }
     }
 
     this.initJitsi('agent', 'meet.jit.si', config)
@@ -95,7 +109,7 @@ export default {
     this.jitsiApi.on('audioMuteStatusChanged', this.checkAudioMuteStatus)
     this.jitsiApi.on('videoMuteStatusChanged', this.checkVideoMuteStatus)
 
-    console.log(this.jitsiApi)
+    console.log('***jitsi API object***', this.jitsiApi)
   },
 
   beforeDestroy() {
@@ -104,7 +118,6 @@ export default {
 
   methods: {
     toggleGuestAudio() {
-      console.log('***participants:***', this.participants)
       if (this.participants.length) {
         const pid = this.participants[0].id
         this.jitsiApi.executeCommand(
