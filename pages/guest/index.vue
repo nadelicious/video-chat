@@ -71,7 +71,7 @@ export default {
         // we disable all the UI elements. For enabling it them, remove this prop.
         // For a list of all UI elements, please consult the api documentation on github
         TOOLBAR_BUTTONS: [],
-        MOBILE_APP_PROMO: true
+        MOBILE_APP_PROMO: false
       }
     }
 
