@@ -35,7 +35,7 @@
       <div class="flex items-center justify-center">
         <button
           class="outline-none border solid border-gray-500 block mr-5 bg-white hover:bg-gray-100 text-black font-bold rounded-full h-12 w-12 flex items-center justify-center"
-          @click="takePic"
+          @click="toggleCamera"
         >
           <i class="icon-camera" />
         </button>
