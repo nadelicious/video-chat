@@ -35,7 +35,7 @@
       <div class="flex items-center justify-center">
         <button
           class="outline-none border solid border-gray-500 block mr-5 bg-white hover:bg-gray-100 text-black font-bold rounded-full h-12 w-12 flex items-center justify-center"
-          @click="toggleCamera"
+          @click="takePic"
         >
           <i class="icon-camera" />
         </button>
@@ -75,7 +75,7 @@ export default {
       }
     }
 
-    this.initJitsi('agent', 'meet.jit.si', config)
+    this.initJitsi('guest', 'meet.jit.si', config)
 
     this.jitsiApi.on(
       'endpointTextMessageReceived',
@@ -204,12 +204,22 @@ export default {
       }
     },
 
+    takePic() {},
+
     checkAudioMuteStatus({ muted }) {
       this.audioMuted = muted
     },
 
     checkVideoMuteStatus({ muted }) {
-      this.audioMuted = muted
+      this.videoMuted = muted
+    },
+
+    toggleVideo() {
+      this.jitsiApi.executeCommand('toggleVideo')
+    },
+
+    toggleAudio() {
+      this.jitsiApi.executeCommand('toggleAudio')
     },
 
     endCall() {
