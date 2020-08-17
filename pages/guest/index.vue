@@ -57,7 +57,8 @@ export default {
       participants: [],
       audioMuted: false,
       videoMuted: false,
-      cameraSwitched: false
+      cameraSwitched: false,
+      currentVideoInput: null
     }
   },
 
@@ -154,7 +155,15 @@ export default {
         const currentDevices = await this.jitsiApi.getCurrentDevices()
         const { videoInput: vi } = currentDevices
 
-        const currentVideoInput = vi || videoInputs[0]
+        let currentVideoInput = videoInputs[0]
+
+        if (vi) {
+          currentVideoInput = vi
+        }
+
+        if (this.currentVideoInput) {
+          currentVideoInput = this.currentVideoInput
+        }
 
         if (!vi) {
           console.log('***uses workaround ***', currentVideoInput)
@@ -170,6 +179,8 @@ export default {
           if (otherVideoInput) {
             const { deviceId, label } = otherVideoInput
             this.jitsiApi.setVideoInputDevice(label, deviceId)
+            this.currentVideoInput = otherVideoInput
+            this.cameraSwitched = !this.cameraSwitched
           } else {
             throw new Error('Unable to match camera label.')
           }
@@ -184,6 +195,8 @@ export default {
           if (otherVideoInput) {
             const { deviceId, label } = otherVideoInput
             this.jitsiApi.setVideoInputDevice(label, deviceId)
+            this.currentVideoInput = otherVideoInput
+            this.cameraSwitched = !this.cameraSwitched
           } else {
             throw new Error('Unable to match camera label.')
           }
@@ -199,6 +212,8 @@ export default {
           if (otherVideoInput) {
             const { deviceId, label } = otherVideoInput
             this.jitsiApi.setVideoInputDevice(label, deviceId)
+            this.currentVideoInput = otherVideoInput
+            this.cameraSwitched = !this.cameraSwitched
           } else {
             throw new Error('Unable to find device id.')
           }

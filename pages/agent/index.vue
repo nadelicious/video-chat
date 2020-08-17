@@ -153,7 +153,7 @@ export default {
         )
       }
 
-      this.guestVideoMuted = !this.guestVideoMuted
+      this.guestCameraSwitched = !this.guestCameraSwitched
     },
 
     findGuestLocation() {
