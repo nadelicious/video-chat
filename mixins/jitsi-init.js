@@ -8,15 +8,38 @@ export default {
   },
 
   methods: {
-    initJitsi(type, domain, options) {
+    initJitsi(type, options, domain) {
       let config = jitsiConfig
 
-      config = { ...config, ...options }
+      const configOverwrite = {
+        ...config.configOverwrite,
+        ...options.configOverwrite
+      }
 
-      console.log('*** jitsi config ***', config)
+      const interfaceConfigOverwrite = {
+        ...config.interfaceConfigOverwrite,
+        ...options.interfaceConfigOverwrite
+      }
+
+      delete config.configOverwrite
+      delete config.interfaceConfigOverwrite
+
+      delete options.configOverwrite
+      delete options.interfaceConfigOverwrite
+
+      config = {
+        ...config,
+        ...options,
+        configOverwrite,
+        interfaceConfigOverwrite
+      }
+
+      const d = domain || '8x8.vc'
+
+      console.log('***jitsi config ***', config)
 
       // eslint-disable-next-line no-undef
-      this.jitsiApi = new JitsiMeetExternalAPI(domain, config)
+      this.jitsiApi = new JitsiMeetExternalAPI(d, config)
     }
   }
 }

@@ -67,16 +67,27 @@ export default {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
       height: window.innerHeight,
+      configOverwrite: {
+        constraints: {
+          video: {
+            height: {
+              ideal: 1080,
+              max: 1080,
+              min: 320
+            }
+          }
+        }
+      },
       interfaceConfigOverwrite: {
         // This property allows setting only specific UI elements on the iframe. In our case
         // we disable all the UI elements. For enabling it them, remove this prop.
         // For a list of all UI elements, please consult the api documentation on github
-        TOOLBAR_BUTTONS: [],
+        TOOLBAR_BUTTONS: ['fullscreen'],
         MOBILE_APP_PROMO: false
       }
     }
 
-    this.initJitsi('guest', 'meet.jit.si', config)
+    this.initJitsi('guest', config)
 
     this.jitsiApi.on(
       'endpointTextMessageReceived',
@@ -113,7 +124,6 @@ export default {
 
           case 'toggleCamera': {
             this.toggleCamera()
-            // this.jitsiApi.setVideoInputDevice(deviceLabel, deviceId);
             break
           }
 

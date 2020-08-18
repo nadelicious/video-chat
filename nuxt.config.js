@@ -22,7 +22,7 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
       {
-        src: 'https://meet.jit.si/external_api.js',
+        src: 'https://8x8.vc/external_api.js',
         body: true
       }
     ]
