@@ -107,6 +107,7 @@ export default {
     this.initJitsi('agent', config)
 
     this.jitsiApi.on('participantJoined', this.addParticipant)
+    this.jitsiApi.on('participantLeft', this.removeParticipant)
     this.jitsiApi.on('audioMuteStatusChanged', this.checkAudioMuteStatus)
     this.jitsiApi.on('videoMuteStatusChanged', this.checkVideoMuteStatus)
 
@@ -139,9 +140,8 @@ export default {
           pid,
           'command:toggleVideo'
         )
+        this.guestVideoMuted = !this.guestVideoMuted
       }
-
-      this.guestVideoMuted = !this.guestVideoMuted
     },
 
     toggleGuestCamera() {
@@ -152,9 +152,9 @@ export default {
           pid,
           'command:toggleCamera'
         )
-      }
 
-      this.guestCameraSwitched = !this.guestCameraSwitched
+        this.guestCameraSwitched = !this.guestCameraSwitched
+      }
     },
 
     findGuestLocation() {
@@ -181,6 +181,13 @@ export default {
       console.log('***participants:***', this.participants)
     },
 
+    removeParticipant(participant) {
+      this.participants = this.participants.filter(
+        (v) => v.id !== participant.id
+      )
+      console.log('***participants:***', this.participants)
+    },
+
     toggleVideo() {
       this.jitsiApi.executeCommand('toggleVideo')
     },
@@ -199,6 +206,7 @@ export default {
       this.jitsiApi.off('participantJoined', this.addParticipant)
       this.jitsiApi.off('audioMuteStatusChanged', this.checkAudioMuteStatus)
       this.jitsiApi.off('videoMuteStatusChanged', this.checkVideoMuteStatus)
+      this.jitsiApi.off('participantLeft', this.removeParticipant)
     }
   }
 }
