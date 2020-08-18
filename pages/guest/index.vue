@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { isAndroid, isChrome } from 'mobile-device-detect'
 import JitsiInitMixin from '@/mixins/jitsi-init'
 
 export default {
@@ -63,6 +64,23 @@ export default {
   },
 
   mounted() {
+    let height = {
+      height: {
+        ideal: 720,
+        max: 720,
+        min: 320
+      }
+    }
+
+    if (isAndroid && isChrome) {
+      height = {
+        height: {
+          ideal: 1080,
+          max: 1080,
+          min: 320
+        }
+      }
+    }
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
@@ -70,11 +88,7 @@ export default {
       configOverwrite: {
         constraints: {
           video: {
-            height: {
-              ideal: 1080,
-              max: 1080,
-              min: 320
-            }
+            height
           }
         }
       },
