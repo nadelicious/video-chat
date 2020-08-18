@@ -166,8 +166,13 @@ export default {
 
       console.log(
         '***iframe***',
-        document.querySelector('.agent__container iframe')
+        document.querySelector('.agent__container iframe').contentWindow
+          .document
       )
+
+      // document.querySelector(
+      //   '.agent__container iframe .content'
+      // ).style.backgroundColor = 'white'
 
       console.log('get iframe', iframe)
       if (this.participants.length) {
