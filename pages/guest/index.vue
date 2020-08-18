@@ -97,7 +97,9 @@ export default {
         // we disable all the UI elements. For enabling it them, remove this prop.
         // For a list of all UI elements, please consult the api documentation on github
         TOOLBAR_BUTTONS: ['fullscreen'],
-        MOBILE_APP_PROMO: false
+        MOBILE_APP_PROMO: false,
+        DEFAULT_LOCAL_DISPLAY_NAME: 'guest',
+        DEFAULT_REMOTE_DISPLAY_NAME: 'agent'
       }
     }
 

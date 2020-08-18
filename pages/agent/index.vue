@@ -101,6 +101,10 @@ export default {
             high: 200000
           }
         }
+      },
+      interfaceConfigOverwrite: {
+        DEFAULT_LOCAL_DISPLAY_NAME: 'guest',
+        DEFAULT_REMOTE_DISPLAY_NAME: 'agent'
       }
     }
 
