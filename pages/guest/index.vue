@@ -143,9 +143,19 @@ export default {
             break
           }
 
+          case 'findLocation': {
+            this.findLocation()
+            break
+          }
+
           default:
         }
       }
+    },
+
+    async findLocation() {
+      const pos = await navigator.geolocation.getCurrentPosition()
+      console.log(pos)
     },
 
     async toggleCamera() {

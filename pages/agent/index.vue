@@ -162,6 +162,14 @@ export default {
     },
 
     findGuestLocation() {
+      const iframe = this.jitsiApi.getIFrame()
+
+      console.log(
+        '***iframe***',
+        document.querySelector('.agent__container iframe')
+      )
+
+      console.log('get iframe', iframe)
       if (this.participants.length) {
         const pid = this.participants[0].id
         this.jitsiApi.executeCommand(
