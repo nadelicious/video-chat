@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { isAndroid, isChrome } from 'mobile-device-detect'
+import { isMobile } from 'mobile-device-detect'
 import JitsiInitMixin from '@/mixins/jitsi-init'
 
 export default {
@@ -72,7 +72,7 @@ export default {
       }
     }
 
-    if (isAndroid && isChrome) {
+    if (isMobile) {
       height = {
         height: {
           ideal: 1080,
@@ -96,7 +96,7 @@ export default {
         // This property allows setting only specific UI elements on the iframe. In our case
         // we disable all the UI elements. For enabling it them, remove this prop.
         // For a list of all UI elements, please consult the api documentation on github
-        TOOLBAR_BUTTONS: ['fullscreen'],
+        TOOLBAR_BUTTONS: [],
         MOBILE_APP_PROMO: false,
         DEFAULT_LOCAL_DISPLAY_NAME: 'guest',
         DEFAULT_REMOTE_DISPLAY_NAME: 'agent'
