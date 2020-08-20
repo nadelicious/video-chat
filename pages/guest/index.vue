@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { isMobile } from 'mobile-device-detect'
+// import { isMobile } from 'mobile-device-detect'
 import JitsiInitMixin from '@/mixins/jitsi-init'
 
 export default {
@@ -64,7 +64,7 @@ export default {
   },
 
   mounted() {
-    let height = {
+    const height = {
       height: {
         ideal: 720,
         max: 720,
@@ -72,15 +72,15 @@ export default {
       }
     }
 
-    if (isMobile) {
-      height = {
-        height: {
-          ideal: 1080,
-          max: 1080,
-          min: 320
-        }
-      }
-    }
+    // if (isMobile) {
+    //   height = {
+    //     height: {
+    //       ideal: 1080,
+    //       max: 1080,
+    //       min: 320
+    //     }
+    //   }
+    // }
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
