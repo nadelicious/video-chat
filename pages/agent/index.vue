@@ -160,7 +160,7 @@ export default {
 
     // resize initial
     const { width, height } = this.guestData
-    this.jitsiApi.executeCommand('resizeLargeVideo', width, height)
+    this.jitsiApi.resizeLargeVideo(width, height)
 
     console.log('***jitsi API object***', this.jitsiApi)
   },
