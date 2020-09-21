@@ -1,7 +1,7 @@
 <template>
   <div class="w-100 h-100 agent">
     <div id="ac" class="agent__container" />
-    <div class="guest__controls fixed z-10 p-4">
+    <div v-if="localJoined" class="guest__controls fixed z-10 p-4">
       <div class="flex flex-col items-center justify-center">
         <button
           class="outline-none block bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
@@ -36,7 +36,7 @@
         </button>
       </div>
     </div>
-    <div class="agent__controls fixed z-10 p-4 text-center">
+    <div v-if="localJoined" class="agent__controls fixed z-10 p-4 text-center">
       <div class="flex items-center justify-center">
         <button
           class="outline-none block mr-5 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
@@ -53,11 +53,40 @@
         </button>
 
         <button
+          class="outline-none block mr-5 bg-blue-400 hover:bg-blue-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
+          @click="takePic"
+        >
+          <i class="icon-camera" />
+        </button>
+
+        <button
           class="outline-none block bg-red-400 hover:bg-red-500 text-white font-bold rounded-full h-12 w-12 flex items-center justify-center"
           @click="endCall"
         >
           <i class="icon-phone-off" />
         </button>
+      </div>
+    </div>
+    <div
+      v-if="picPreview"
+      class="pic-preview fixed left-0 top-0 bg-white w-full h-full"
+    >
+      <a
+        class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0"
+        @click.prevent="closePicPreview"
+        >close</a
+      >
+      <div class="flex justify-center items-center">
+        <div>
+          <img
+            v-if="guestData.picURL"
+            :src="guestData.picURL"
+            :style="{
+              width: `${guestData.width}px`,
+              height: `${guestData.height}px`
+            }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -78,7 +107,15 @@ export default {
       videoMuted: false,
       guestAudioMuted: false,
       guestVideoMuted: false,
-      guestCameraSwitched: false
+      guestCameraSwitched: false,
+      localJoined: false,
+      guestData: {
+        width: 360,
+        height: 720,
+        picURL: ''
+      },
+
+      picPreview: false
     }
   },
 
@@ -103,17 +140,27 @@ export default {
         }
       },
       interfaceConfigOverwrite: {
-        DEFAULT_LOCAL_DISPLAY_NAME: 'guest',
-        DEFAULT_REMOTE_DISPLAY_NAME: 'agent'
+        DEFAULT_LOCAL_DISPLAY_NAME: 'agent',
+        DEFAULT_REMOTE_DISPLAY_NAME: 'guest'
       }
     }
 
     this.initJitsi('agent', config)
 
-    this.jitsiApi.on('participantJoined', this.addParticipant)
-    this.jitsiApi.on('participantLeft', this.removeParticipant)
+    this.jitsiApi.on('videoConferenceJoined', this.onLocalParticipantJoined)
+    this.jitsiApi.on('participantJoined', this.onRemoteParticipantJoined)
+    this.jitsiApi.on('participantLeft', this.onRemoteParticipantLeft)
     this.jitsiApi.on('audioMuteStatusChanged', this.checkAudioMuteStatus)
     this.jitsiApi.on('videoMuteStatusChanged', this.checkVideoMuteStatus)
+
+    this.jitsiApi.on(
+      'endpointTextMessageReceived',
+      this.recieveEndPointTextMessage
+    )
+
+    // resize initial
+    const { width, height } = this.guestData
+    this.jitsiApi.executeCommand('resizeLargeVideo', width, height)
 
     console.log('***jitsi API object***', this.jitsiApi)
   },
@@ -123,13 +170,64 @@ export default {
   },
 
   methods: {
+    recieveEndPointTextMessage(obj) {
+      try {
+        const { data: d } = obj
+        const { eventData } = d
+        const { text } = eventData
+
+        const dataObj = JSON.parse(text) || {}
+
+        const { type, name, data } = dataObj
+
+        if (type === 'command') {
+          switch (name) {
+            case 'sendPic': {
+              this.guestData = { ...this.guestData, ...data }
+              this.picPreview = true
+              break
+            }
+
+            case 'closePic': {
+              this.picPreview = false
+              break
+            }
+
+            default:
+          }
+        }
+
+        if (type === 'metadata') {
+          switch (name) {
+            case 'guest': {
+              this.guestData = { ...this.guestData, ...data }
+
+              const { width, height } = this.guestData
+              this.jitsiApi.resizeLargeVideo(width, height)
+              break
+            }
+
+            default:
+          }
+        }
+      } catch (e) {
+        // do nothing
+      }
+    },
+
     toggleGuestAudio() {
       if (this.participants.length) {
         const pid = this.participants[0].id
+        const data = {
+          type: 'command',
+          name: 'toggleAudio',
+          data: {}
+        }
+
         this.jitsiApi.executeCommand(
           'sendEndpointTextMessage',
           pid,
-          'command:toggleAudio'
+          JSON.stringify(data)
         )
 
         this.guestAudioMuted = !this.guestAudioMuted
@@ -139,11 +237,18 @@ export default {
     toggleGuestVideo() {
       if (this.participants.length) {
         const pid = this.participants[0].id
+        const data = {
+          type: 'command',
+          name: 'toggleVideo',
+          data: {}
+        }
+
         this.jitsiApi.executeCommand(
           'sendEndpointTextMessage',
           pid,
-          'command:toggleVideo'
+          JSON.stringify(data)
         )
+
         this.guestVideoMuted = !this.guestVideoMuted
       }
     },
@@ -151,10 +256,16 @@ export default {
     toggleGuestCamera() {
       if (this.participants.length) {
         const pid = this.participants[0].id
+        const data = {
+          type: 'command',
+          name: 'toggleCamera',
+          data: {}
+        }
+
         this.jitsiApi.executeCommand(
           'sendEndpointTextMessage',
           pid,
-          'command:toggleCamera'
+          JSON.stringify(data)
         )
 
         this.guestCameraSwitched = !this.guestCameraSwitched
@@ -162,25 +273,19 @@ export default {
     },
 
     findGuestLocation() {
-      const iframe = this.jitsiApi.getIFrame()
-
-      console.log(
-        '***iframe***',
-        document.querySelector('.agent__container iframe').contentWindow
-          .document
-      )
-
-      // document.querySelector(
-      //   '.agent__container iframe .content'
-      // ).style.backgroundColor = 'white'
-
-      console.log('get iframe', iframe)
       if (this.participants.length) {
         const pid = this.participants[0].id
+
+        const data = {
+          type: 'command',
+          name: 'findLocation',
+          data: {}
+        }
+
         this.jitsiApi.executeCommand(
           'sendEndpointTextMessage',
           pid,
-          'command:findLocation'
+          JSON.stringify(data)
         )
       }
     },
@@ -193,16 +298,56 @@ export default {
       this.videoMuted = muted
     },
 
-    addParticipant(participant) {
-      this.participants = this.participants.concat(participant)
-      console.log('***participants:***', this.participants)
+    onLocalParticipantJoined() {
+      this.localJoined = true
     },
 
-    removeParticipant(participant) {
+    onRemoteParticipantJoined(participant) {
+      this.participants = this.participants.concat(participant)
+
+      this.jitsiApi.setLargeVideoParticipant(participant.id)
+    },
+
+    onRemoteParticipantLeft(participant) {
       this.participants = this.participants.filter(
         (v) => v.id !== participant.id
       )
       console.log('***participants:***', this.participants)
+    },
+
+    takePic() {
+      if (this.participants.length) {
+        const pid = this.participants[0].id
+
+        const data = {
+          type: 'command',
+          name: 'takePic',
+          data: {}
+        }
+        this.jitsiApi.executeCommand(
+          'sendEndpointTextMessage',
+          pid,
+          JSON.stringify(data)
+        )
+      }
+    },
+
+    closePicPreview() {
+      this.picPreview = false
+      const data = {
+        type: 'command',
+        name: 'closePic',
+        data: {}
+      }
+
+      if (this.participants.length) {
+        const pid = this.participants[0].id
+        this.jitsiApi.executeCommand(
+          'sendEndpointTextMessage',
+          pid,
+          JSON.stringify(data)
+        )
+      }
     },
 
     toggleVideo() {
@@ -220,10 +365,15 @@ export default {
     },
 
     removeListeners() {
-      this.jitsiApi.off('participantJoined', this.addParticipant)
+      this.jitsiApi.off('participantJoined', this.onRemoteParticipantJoined)
       this.jitsiApi.off('audioMuteStatusChanged', this.checkAudioMuteStatus)
       this.jitsiApi.off('videoMuteStatusChanged', this.checkVideoMuteStatus)
-      this.jitsiApi.off('participantLeft', this.removeParticipant)
+      this.jitsiApi.off('participantLeft', this.onRemoteParticipantLeft)
+      this.jitsiApi.off(
+        'endpointTextMessageReceived',
+        this.recieveEndPointTextMessage
+      )
+      this.jitsiApi.off('videoConferenceJoined', this.onLocalParticipantJoined)
     }
   }
 }
