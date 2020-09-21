@@ -46,10 +46,10 @@
       v-if="picPreview"
       class="pic-preview fixed left-0 top-0 bg-white w-full h-full"
     >
-      <a
-        class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0"
+      <span
+        class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0 cursor-pointer"
         @click.prevent="closePicPreview"
-        >close</a
+        >close</span
       >
       <div class="flex justify-center items-center">
         <div>
