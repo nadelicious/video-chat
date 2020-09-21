@@ -34,7 +34,7 @@ export default {
         interfaceConfigOverwrite
       }
       // meet.jit.si
-      const d = domain || 'beta.meet.jitsi.si'
+      const d = domain || 'meet.jitsi.si'
 
       console.log('***jitsi config ***', config)
 
