@@ -48,7 +48,7 @@
     >
       <span
         class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0 cursor-pointer"
-        @click.prevent="closePicPreview"
+        @click="closePicPreview"
         >close</span
       >
       <div class="flex justify-center items-center">
