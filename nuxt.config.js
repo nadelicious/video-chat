@@ -20,6 +20,7 @@ export default {
       }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    // https://beta.meet.jit.si/external_api.js
     script: [
       {
         src: 'https://beta.meet.jit.si/external_api.js',

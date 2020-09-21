@@ -35,7 +35,7 @@
       <div class="flex items-center justify-center">
         <button
           class="outline-none border solid border-gray-500 block mr-5 bg-white hover:bg-gray-100 text-black font-bold rounded-full h-12 w-12 flex items-center justify-center"
-          @click="takePic"
+          @click="takePic()"
         >
           <i class="icon-camera" />
         </button>
@@ -46,20 +46,22 @@
       v-if="picPreview"
       class="pic-preview fixed left-0 top-0 bg-white w-full h-full"
     >
-      <span
-        class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0 cursor-pointer"
-        @click="closePicPreview"
-        >close</span
-      >
-      <div class="flex justify-center items-center">
-        <div>
-          <img
-            :src="picURL"
-            :style="{
-              width: `${getDimension().width}px`,
-              height: `${getDimension().height}px`
-            }"
-          />
+      <div class="relative">
+        <span
+          class="text-right block absolute text-xs text-gray-500 p-3 right-0 top-0 cursor-pointer"
+          @click="closePicPreview"
+          >close</span
+        >
+        <div class="flex justify-center items-center">
+          <div>
+            <img
+              :src="picURL"
+              :style="{
+                width: `${getDimension().width}px`,
+                height: `${getDimension().height}px`
+              }"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -67,7 +69,8 @@
 </template>
 
 <script>
-// import { isMobile } from 'mobile-device-detect'
+import { isMobile } from 'mobile-device-detect'
+// import axios from 'axios'
 import JitsiInitMixin from '@/mixins/jitsi-init'
 
 export default {
@@ -89,7 +92,7 @@ export default {
   },
 
   mounted() {
-    const height = {
+    let height = {
       height: {
         ideal: 720,
         max: 720,
@@ -97,15 +100,15 @@ export default {
       }
     }
 
-    // if (isMobile) {
-    //   height = {
-    //     height: {
-    //       ideal: 1080,
-    //       max: 1080,
-    //       min: 320
-    //     }
-    //   }
-    // }
+    if (isMobile) {
+      height = {
+        height: {
+          ideal: 1080,
+          max: 1080,
+          min: 320
+        }
+      }
+    }
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
@@ -155,6 +158,8 @@ export default {
 
         const dataObj = JSON.parse(text) || {}
 
+        console.log('***** recieved obj *****', dataObj)
+
         const { type, name } = dataObj
 
         if (type === 'command') {
@@ -193,6 +198,7 @@ export default {
           }
         }
       } catch (e) {
+        console.log(e)
         // do nothing
       }
     },
@@ -209,7 +215,10 @@ export default {
       const data = {
         type: 'metadata',
         name: 'guest',
-        data: {}
+        data: {
+          width: this.getDimension().width,
+          height: this.getDimension().height
+        }
       }
 
       this.jitsiApi.executeCommand(
@@ -333,32 +342,36 @@ export default {
     },
 
     async takePic() {
-      const { dataURL } = await this.jitsiApi.captureLargeVideoScreenshot()
+      try {
+        const { dataURL } = await this.jitsiApi.captureLargeVideoScreenshot()
 
-      this.picURL = dataURL
+        this.picURL = dataURL
 
-      this.picPreview = true
+        this.picPreview = true
 
-      const pInfo = this.jitsiApi.getParticipantsInfo()
+        const pInfo = this.jitsiApi.getParticipantsInfo()
 
-      if (pInfo.length) {
-        const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
+        if (pInfo.length) {
+          const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
 
-        if (agent) {
-          const data = {
-            type: 'command',
-            name: 'sendPic',
-            data: {
-              picURL: this.picURL
+          if (agent) {
+            const data = {
+              type: 'command',
+              name: 'sendPic',
+              data: {
+                picURL:
+                  'https://raultorrefieljr.com/static/3a7b1299f328bffc2d54d95e4277ab79/ab065/profilepic.jpg'
+              }
             }
+            this.jitsiApi.executeCommand(
+              'sendEndpointTextMessage',
+              agent.participantId,
+              JSON.stringify(data)
+            )
           }
-
-          this.jitsiApi.executeCommand(
-            'sendEndpointTextMessage',
-            agent.participantId,
-            JSON.stringify(data)
-          )
         }
+      } catch (e) {
+        console.log(e)
       }
     },
 
