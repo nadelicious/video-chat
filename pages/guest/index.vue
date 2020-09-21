@@ -140,8 +140,6 @@ export default {
     this.jitsiApi.on('videoConferenceJoined', this.onLocalParticipantJoined)
     this.jitsiApi.on('participantJoined', this.onRemoteParticipantJoined)
     this.jitsiApi.on('participantLeft', this.onRemoteParticipantLeft)
-
-    console.log('*** participant info ***', this.jitsiApi.getParticipantsInfo())
   },
 
   beforeDestroy() {

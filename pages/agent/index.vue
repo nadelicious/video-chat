@@ -158,10 +158,6 @@ export default {
       this.recieveEndPointTextMessage
     )
 
-    // resize initial
-    const { width, height } = this.guestData
-    this.jitsiApi.resizeLargeVideo(width, height)
-
     console.log('***jitsi API object***', this.jitsiApi)
   },
 
@@ -300,6 +296,10 @@ export default {
 
     onLocalParticipantJoined() {
       this.localJoined = true
+
+      // resize initial
+      const { width, height } = this.guestData
+      this.jitsiApi.resizeLargeVideo(width, height)
     },
 
     onRemoteParticipantJoined(participant) {
