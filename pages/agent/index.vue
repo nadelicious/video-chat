@@ -301,8 +301,6 @@ export default {
 
       // resize initial
       const { width, height } = this.guestData
-
-      console.log('guestData', this.guestData)
       this.jitsiApi.resizeLargeVideo(width, height)
     },
 
@@ -316,7 +314,7 @@ export default {
       this.participants = this.participants.filter(
         (v) => v.id !== participant.id
       )
-      console.log('***participants:***', this.participants)
+      console.log('***participants after left:***', this.participants)
     },
 
     takePic() {
