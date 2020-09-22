@@ -109,6 +109,7 @@ export default {
       guestVideoMuted: false,
       guestCameraSwitched: false,
       localJoined: false,
+      localParticipant: {},
       guestData: {
         width: 360,
         height: 720,
@@ -294,11 +295,14 @@ export default {
       this.videoMuted = muted
     },
 
-    onLocalParticipantJoined() {
+    onLocalParticipantJoined(p) {
       this.localJoined = true
+      this.localParticipant = p
 
       // resize initial
       const { width, height } = this.guestData
+
+      console.log('guestData', this.guestData)
       this.jitsiApi.resizeLargeVideo(width, height)
     },
 

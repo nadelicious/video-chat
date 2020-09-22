@@ -87,7 +87,7 @@ export default {
       currentVideoInput: null,
       picURL: '',
       localJoined: false,
-      localPartipant: {},
+      localParticipant: {},
       picPreview: false
     }
   },
@@ -202,11 +202,11 @@ export default {
       }
     },
 
-    onLocalParticipantJoined({ id }) {
+    onLocalParticipantJoined(p) {
       this.localJoined = true
-      this.localPid = id
+      this.localParticipant = p
 
-      this.jitsiApi.setLargeVideoParticipant(id)
+      this.jitsiApi.setLargeVideoParticipant(p.id)
     },
 
     onRemoteParticipantJoined(participant) {
@@ -220,8 +220,6 @@ export default {
           height: this.getDimension().height
         }
       }
-
-      this.jitsiApi.setLargeVideoParticipant(this.localPartipant.id)
 
       this.jitsiApi.executeCommand(
         'sendEndpointTextMessage',
@@ -349,29 +347,29 @@ export default {
 
         this.picURL = dataURL
 
-        // this.picPreview = true
+        this.picPreview = true
 
-        // const pInfo = this.jitsiApi.getParticipantsInfo()
+        const pInfo = this.jitsiApi.getParticipantsInfo()
 
-        // if (pInfo.length) {
-        //   const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
+        if (pInfo.length) {
+          const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
 
-        //   if (agent) {
-        //     const data = {
-        //       type: 'command',
-        //       name: 'sendPic',
-        //       data: {
-        //         picURL:
-        //           'https://raultorrefieljr.com/static/3a7b1299f328bffc2d54d95e4277ab79/ab065/profilepic.jpg'
-        //       }
-        //     }
-        //     this.jitsiApi.executeCommand(
-        //       'sendEndpointTextMessage',
-        //       agent.participantId,
-        //       JSON.stringify(data)
-        //     )
-        //   }
-        // }
+          if (agent) {
+            const data = {
+              type: 'command',
+              name: 'sendPic',
+              data: {
+                picURL:
+                  'https://raultorrefieljr.com/static/3a7b1299f328bffc2d54d95e4277ab79/ab065/profilepic.jpg'
+              }
+            }
+            this.jitsiApi.executeCommand(
+              'sendEndpointTextMessage',
+              agent.participantId,
+              JSON.stringify(data)
+            )
+          }
+        }
       } catch (e) {
         console.log(e)
       }
