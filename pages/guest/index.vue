@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { isMobile } from 'mobile-device-detect'
+// import { isMobile } from 'mobile-device-detect'
 // import axios from 'axios'
 import JitsiInitMixin from '@/mixins/jitsi-init'
 
@@ -87,12 +87,13 @@ export default {
       currentVideoInput: null,
       picURL: '',
       localJoined: false,
+      localPartipant: {},
       picPreview: false
     }
   },
 
   mounted() {
-    let height = {
+    const height = {
       height: {
         ideal: 720,
         max: 720,
@@ -100,15 +101,15 @@ export default {
       }
     }
 
-    if (isMobile) {
-      height = {
-        height: {
-          ideal: 1080,
-          max: 1080,
-          min: 320
-        }
-      }
-    }
+    // if (isMobile) {
+    //   height = {
+    //     height: {
+    //       ideal: 1080,
+    //       max: 1080,
+    //       min: 320
+    //     }
+    //   }
+    // }
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
@@ -158,8 +159,6 @@ export default {
 
         const dataObj = JSON.parse(text) || {}
 
-        console.log('***** recieved obj *****', dataObj)
-
         const { type, name } = dataObj
 
         if (type === 'command') {
@@ -205,6 +204,7 @@ export default {
 
     onLocalParticipantJoined({ id }) {
       this.localJoined = true
+      this.localPid = id
 
       this.jitsiApi.setLargeVideoParticipant(id)
     },
@@ -220,6 +220,8 @@ export default {
           height: this.getDimension().height
         }
       }
+
+      this.jitsiApi.setLargeVideoParticipant(this.localPartipant.id)
 
       this.jitsiApi.executeCommand(
         'sendEndpointTextMessage',
@@ -347,29 +349,29 @@ export default {
 
         this.picURL = dataURL
 
-        this.picPreview = true
+        // this.picPreview = true
 
-        const pInfo = this.jitsiApi.getParticipantsInfo()
+        // const pInfo = this.jitsiApi.getParticipantsInfo()
 
-        if (pInfo.length) {
-          const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
+        // if (pInfo.length) {
+        //   const agent = pInfo.find((v) => v.formattedDisplayName === 'agent')
 
-          if (agent) {
-            const data = {
-              type: 'command',
-              name: 'sendPic',
-              data: {
-                picURL:
-                  'https://raultorrefieljr.com/static/3a7b1299f328bffc2d54d95e4277ab79/ab065/profilepic.jpg'
-              }
-            }
-            this.jitsiApi.executeCommand(
-              'sendEndpointTextMessage',
-              agent.participantId,
-              JSON.stringify(data)
-            )
-          }
-        }
+        //   if (agent) {
+        //     const data = {
+        //       type: 'command',
+        //       name: 'sendPic',
+        //       data: {
+        //         picURL:
+        //           'https://raultorrefieljr.com/static/3a7b1299f328bffc2d54d95e4277ab79/ab065/profilepic.jpg'
+        //       }
+        //     }
+        //     this.jitsiApi.executeCommand(
+        //       'sendEndpointTextMessage',
+        //       agent.participantId,
+        //       JSON.stringify(data)
+        //     )
+        //   }
+        // }
       } catch (e) {
         console.log(e)
       }
