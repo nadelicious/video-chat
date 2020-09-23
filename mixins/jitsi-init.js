@@ -34,7 +34,7 @@ export default {
         interfaceConfigOverwrite
       }
       // meet.jit.si
-      const d = domain || 'beta.meet.jit.si'
+      const d = domain || 'meet.jit.si'
 
       // eslint-disable-next-line no-undef
       this.jitsiApi = new JitsiMeetExternalAPI(d, config)

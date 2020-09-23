@@ -23,7 +23,7 @@ export default {
     // https://beta.meet.jit.si/external_api.js
     script: [
       {
-        src: 'https://beta.meet.jit.si/external_api.js',
+        src: 'https://meet.jit.si/external_api.js',
         body: true
       }
     ]
