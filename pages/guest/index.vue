@@ -206,11 +206,13 @@ export default {
       this.localJoined = true
       this.localParticipant = p
 
-      this.jitsiApi.setLargeVideoParticipant(p.id)
+      // this.jitsiApi.setLargeVideoParticipant(p.id)
     },
 
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
+
+      this.jitsiApi.setLargeVideoParticipant(this.localParticipant.id)
 
       const data = {
         type: 'metadata',
