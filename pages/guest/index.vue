@@ -220,8 +220,12 @@ export default {
 
         if (localParticipant) {
           console.log(
-            '****local participant for large video ***',
-            this.localParticipant
+            '*** local participant from videoConferenceJoined event ***',
+            localParticipant
+          )
+          console.log(
+            '*** local participant from getParticipantsInfo() ***',
+            localParticipant
           )
           this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
         }
