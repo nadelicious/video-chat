@@ -112,8 +112,8 @@ export default {
     // }
     const config = {
       parentNode: document.getElementById('gc'),
-      // width: window.innerWidth,
-      // height: window.innerHeight,
+      width: window.innerWidth,
+      height: window.innerHeight,
       // configOverwrite: {
       //   constraints: {
       //     video: {

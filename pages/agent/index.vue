@@ -123,8 +123,8 @@ export default {
   mounted() {
     const config = {
       parentNode: document.getElementById('ac'),
-      // width: window.innerWidth,
-      // height: window.innerHeight,
+      width: window.innerWidth,
+      height: window.innerHeight,
       // configOverwrite: {
       //   resolution: 320,
       //   videoQuality: {
