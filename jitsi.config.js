@@ -11,8 +11,33 @@ module.exports = {
     // suppressRecordIVR: true
     enableWelcomePage: false,
 
+    disableSimulcast: false,
+
+    resolution: 1080,
+
+    enableP2P: true, // flag to control P2P connections
+    // New P2P options
+
+    useStunTurn: true, // use XEP-0215 to fetch TURN servers for the JVB connection
+    useTurnUdp: false,
+
+    enableLipSync: false,
+    disableRtx: false,
+
+    // Video Quality settings to limit bitrate
+    videoQuality: {
+      disabledCodec: ''
+    },
+    startBitrate: '800',
+    disableAudioLevels: false,
+    disableSuspendVideo: true,
+    stereo: false,
+    forceJVB121Ratio: -1,
+
     p2p: {
-      enabled: true
+      enabled: true,
+      preferredCodec: 'h264',
+      useStunTurn: true // use XEP-0215 to fetch STUN and TURN servers for the P2P connection
     }
   },
 
