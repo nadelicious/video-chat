@@ -36,6 +36,8 @@ export default {
       // meet.jit.si
       const d = domain || 'meet.jit.si'
 
+      console.log('*** Config ***', config)
+
       // eslint-disable-next-line no-undef
       this.jitsiApi = new JitsiMeetExternalAPI(d, config)
     }

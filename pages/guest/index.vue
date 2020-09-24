@@ -93,13 +93,13 @@ export default {
   },
 
   mounted() {
-    const height = {
-      height: {
-        ideal: 720,
-        max: 720,
-        min: 320
-      }
-    }
+    // const height = {
+    //   height: {
+    //     ideal: 720,
+    //     max: 720,
+    //     min: 320
+    //   }
+    // }
 
     // if (isMobile) {
     //   height = {
@@ -114,13 +114,13 @@ export default {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
       height: window.innerHeight,
-      configOverwrite: {
-        constraints: {
-          video: {
-            height
-          }
-        }
-      },
+      // configOverwrite: {
+      //   constraints: {
+      //     video: {
+      //       height
+      //     }
+      //   }
+      // },
       interfaceConfigOverwrite: {
         // This property allows setting only specific UI elements on the iframe. In our case
         // we disable all the UI elements. For enabling it them, remove this prop.

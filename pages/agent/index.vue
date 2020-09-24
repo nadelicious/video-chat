@@ -125,21 +125,21 @@ export default {
       parentNode: document.getElementById('ac'),
       width: window.innerWidth,
       height: window.innerHeight,
-      configOverwrite: {
-        resolution: 320,
-        videoQuality: {
-          // Provides a way to configure the maximum bitrates that will be enforced on the simulcast streams for
-          // video tracks. The keys in the object represent the type of the stream (LD, SD or HD) and the values
-          // are the max.bitrates to be set on that particular type of stream. The actual send may vary based on
-          // the available bandwidth calculated by the browser, but it will be capped by the values specified here.
-          // This is currently not implemented on app based clients on mobile.
-          maxBitratesVideo: {
-            low: 100000,
-            standard: 200000,
-            high: 200000
-          }
-        }
-      },
+      // configOverwrite: {
+      //   resolution: 320,
+      //   videoQuality: {
+      //     // Provides a way to configure the maximum bitrates that will be enforced on the simulcast streams for
+      //     // video tracks. The keys in the object represent the type of the stream (LD, SD or HD) and the values
+      //     // are the max.bitrates to be set on that particular type of stream. The actual send may vary based on
+      //     // the available bandwidth calculated by the browser, but it will be capped by the values specified here.
+      //     // This is currently not implemented on app based clients on mobile.
+      //     maxBitratesVideo: {
+      //       low: 100000,
+      //       standard: 200000,
+      //       high: 200000
+      //     }
+      //   }
+      // },
       interfaceConfigOverwrite: {
         DEFAULT_LOCAL_DISPLAY_NAME: 'agent',
         DEFAULT_REMOTE_DISPLAY_NAME: 'guest'
