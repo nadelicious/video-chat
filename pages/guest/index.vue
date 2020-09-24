@@ -212,6 +212,8 @@ export default {
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
 
+      console.log('***local participant id ***', this.localParticipant.id)
+
       this.jitsiApi.setLargeVideoParticipant(this.localParticipant.id)
 
       const data = {
