@@ -212,24 +212,35 @@ export default {
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
 
-      console.log('***local participant id ***', this.localParticipant.id)
+      const participants = this.jitsiApi.getParticipantsInfo()
 
-      this.jitsiApi.setLargeVideoParticipant(this.localParticipant.id)
+      console.log('***participants***', participants)
 
-      const data = {
-        type: 'metadata',
-        name: 'guest',
-        data: {
-          width: this.getDimension().width,
-          height: this.getDimension().height
+      if (participants.length) {
+        const localParticipant = participants.find(
+          (v) => v.participantId !== participant.id
+        )
+
+        if (localParticipant) {
+          console.log('***localParticipant***', localParticipant)
+          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
         }
       }
 
-      this.jitsiApi.executeCommand(
-        'sendEndpointTextMessage',
-        participant.id,
-        JSON.stringify(data)
-      )
+      // const data = {
+      //   type: 'metadata',
+      //   name: 'guest',
+      //   data: {
+      //     width: this.getDimension().width,
+      //     height: this.getDimension().height
+      //   }
+      // }
+
+      // this.jitsiApi.executeCommand(
+      //   'sendEndpointTextMessage',
+      //   participant.id,
+      //   JSON.stringify(data)
+      // )
     },
 
     onRemoteParticipantLeft(participant) {
