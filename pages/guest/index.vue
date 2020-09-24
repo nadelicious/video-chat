@@ -213,7 +213,7 @@ export default {
       this.participants = this.participants.concat(participant)
       const participants = this.jitsiApi.getParticipantsInfo()
 
-      if (participant.length) {
+      if (participants.length) {
         const localParticipant = participants.find(
           (v) => v.formattedDisplayName === 'guest'
         )
