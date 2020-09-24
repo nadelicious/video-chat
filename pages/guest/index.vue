@@ -211,8 +211,21 @@ export default {
 
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
+      const participants = this.jitsiApi.getParticipantsInfo()
 
-      this.jitsiApi.setLargeVideoParticipant(this.localParticipant.id)
+      if (participant.length) {
+        const localParticipant = participants.find(
+          (v) => v.formattedDisplayName === 'guest'
+        )
+
+        if (localParticipant) {
+          console.log(
+            '****local participant for large video ***',
+            this.localParticipant
+          )
+          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
+        }
+      }
 
       const data = {
         type: 'metadata',
