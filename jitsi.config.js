@@ -1,15 +1,24 @@
 module.exports = {
   // default room name
   roomName: 'LiveVideoApp',
-  width: '100%',
-  height: '100%',
+  // width: '100%',
+  // height: '100%',
   // sets the parent html element of the iframe
   parentNode: null,
   // this allows overwriting of some of the global configurations
   configOverwrite: {
     // when set to true, this will disable the Recording on/off audio notifications
     // suppressRecordIVR: true
+
+    hosts: {
+      domain: 'jaya.jitsi.net',
+
+      muc: 'conference.jaya.jitsi.net', // FIXME: use XEP-0030
+      focus: 'focus.jaya.jitsi.net'
+    },
     enableWelcomePage: false,
+    enableRemb: false,
+    enableTcc: false,
 
     disableSimulcast: false,
 
@@ -33,6 +42,16 @@ module.exports = {
     disableSuspendVideo: true,
     stereo: false,
     forceJVB121Ratio: -1,
+
+    openBridgeChannel: 'websocket', // One of true, 'datachannel', or 'websocket'
+    channelLastN: -1, // The default value of the channel attribute last-n.
+    lastNLimits: {
+      5: 20,
+      30: 15,
+      50: 10,
+      70: 5,
+      90: 2
+    },
 
     p2p: {
       enabled: true,

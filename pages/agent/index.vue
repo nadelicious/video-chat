@@ -123,8 +123,8 @@ export default {
   mounted() {
     const config = {
       parentNode: document.getElementById('ac'),
-      width: window.innerWidth,
-      height: window.innerHeight,
+      // width: window.innerWidth,
+      // height: window.innerHeight,
       // configOverwrite: {
       //   resolution: 320,
       //   videoQuality: {
@@ -197,10 +197,10 @@ export default {
         if (type === 'metadata') {
           switch (name) {
             case 'guest': {
-              this.guestData = { ...this.guestData, ...data }
+              // this.guestData = { ...this.guestData, ...data }
 
-              const { width, height } = this.guestData
-              this.jitsiApi.resizeLargeVideo(width, height)
+              // const { width, height } = this.guestData
+              // this.jitsiApi.resizeLargeVideo(width, height)
               break
             }
 
@@ -300,8 +300,8 @@ export default {
       this.localParticipant = p
 
       // resize initial
-      const { width, height } = this.guestData
-      this.jitsiApi.resizeLargeVideo(width, height)
+      // const { width, height } = this.guestData
+      // this.jitsiApi.resizeLargeVideo(width, height)
     },
 
     onRemoteParticipantJoined(participant) {
