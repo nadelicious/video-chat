@@ -213,6 +213,7 @@ export default {
       this.participants = this.participants.concat(participant)
       const participants = this.jitsiApi.getParticipantsInfo()
 
+      console.log('*** participants ***', participants)
       if (participants.length) {
         const localParticipant = participants.find(
           (v) => v.formattedDisplayName === 'guest'
@@ -221,7 +222,7 @@ export default {
         if (localParticipant) {
           console.log(
             '*** local participant from videoConferenceJoined event ***',
-            localParticipant
+            this.localParticipant
           )
           console.log(
             '*** local participant from getParticipantsInfo() ***',
