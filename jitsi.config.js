@@ -12,7 +12,7 @@ module.exports = {
     enableWelcomePage: false,
 
     p2p: {
-      enabled: false
+      enabled: true
     }
   },
 
