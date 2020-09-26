@@ -93,34 +93,10 @@ export default {
   },
 
   mounted() {
-    // const height = {
-    //   height: {
-    //     ideal: 720,
-    //     max: 720,
-    //     min: 320
-    //   }
-    // }
-
-    // if (isMobile) {
-    //   height = {
-    //     height: {
-    //       ideal: 1080,
-    //       max: 1080,
-    //       min: 320
-    //     }
-    //   }
-    // }
     const config = {
       parentNode: document.getElementById('gc'),
       width: window.innerWidth,
       height: window.innerHeight,
-      // configOverwrite: {
-      //   constraints: {
-      //     video: {
-      //       height
-      //     }
-      //   }
-      // },
       interfaceConfigOverwrite: {
         // This property allows setting only specific UI elements on the iframe. In our case
         // we disable all the UI elements. For enabling it them, remove this prop.
@@ -144,6 +120,7 @@ export default {
     this.jitsiApi.on('videoConferenceJoined', this.onLocalParticipantJoined)
     this.jitsiApi.on('participantJoined', this.onRemoteParticipantJoined)
     this.jitsiApi.on('participantLeft', this.onRemoteParticipantLeft)
+    this.jitsiApi.on('largeVideoChanged', this.onLargeVideoChanged)
   },
 
   beforeDestroy() {
@@ -205,49 +182,54 @@ export default {
     onLocalParticipantJoined(p) {
       this.localJoined = true
       this.localParticipant = p
-
-      // this.jitsiApi.setLargeVideoParticipant(p.id)
     },
 
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
 
-      const participants = this.jitsiApi.getParticipantsInfo()
-
-      console.log('***participants***', participants)
-
-      if (participants.length) {
-        const localParticipant = participants.find(
-          (v) => v.participantId !== participant.id
-        )
-
-        if (localParticipant) {
-          console.log('***localParticipant***', localParticipant)
-          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
+      const data = {
+        type: 'metadata',
+        name: 'guest',
+        data: {
+          width: this.getDimension().width,
+          height: this.getDimension().height
         }
       }
 
-      // const data = {
-      //   type: 'metadata',
-      //   name: 'guest',
-      //   data: {
-      //     width: this.getDimension().width,
-      //     height: this.getDimension().height
-      //   }
-      // }
-
-      // this.jitsiApi.executeCommand(
-      //   'sendEndpointTextMessage',
-      //   participant.id,
-      //   JSON.stringify(data)
-      // )
+      this.jitsiApi.executeCommand(
+        'sendEndpointTextMessage',
+        participant.id,
+        JSON.stringify(data)
+      )
     },
 
     onRemoteParticipantLeft(participant) {
       this.participants = this.participants.filter(
         (v) => v.id !== participant.id
       )
-      console.log('***participants:***', this.participants)
+    },
+
+    onLargeVideoChanged(participant) {
+      console.log(
+        '*** onLargeVideoChanged - newly staged participant***',
+        participant
+      )
+      const participants = this.jitsiApi.getParticipantsInfo()
+
+      console.log(
+        '*** onLargeVideoChanged - participants info***',
+        participants
+      )
+
+      if (participants.length) {
+        const localParticipant = participants.find(
+          (v) => v.participantId === this.localParticipant.id
+        )
+
+        if (localParticipant) {
+          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
+        }
+      }
     },
 
     async findLocation() {
@@ -457,6 +439,7 @@ export default {
 
       this.jitsiApi.off('participantJoined', this.onRemoteParticipantJoined)
       this.jitsiApi.off('participantLeft', this.onRemoteParticipantLeft)
+      this.jitsiApi.off('largeVideoChanged', this.onLargeVideoChanged)
     }
   }
 }

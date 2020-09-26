@@ -15,8 +15,6 @@ module.exports = {
 
     disableSimulcast: false,
 
-    resolution: 1080,
-
     enableP2P: true, // flag to control P2P connections
     // New P2P options
 
@@ -30,6 +28,19 @@ module.exports = {
     videoQuality: {
       disabledCodec: ''
     },
+
+    resolution: 1080,
+
+    constraints: {
+      video: {
+        height: {
+          ideal: 1080,
+          max: 1080,
+          min: 180
+        }
+      }
+    },
+
     startBitrate: '800',
     disableAudioLevels: false,
     disableSuspendVideo: true,
