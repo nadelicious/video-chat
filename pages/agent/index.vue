@@ -193,20 +193,22 @@ export default {
           }
         }
 
-        // if (type === 'metadata') {
-        //   switch (name) {
-        //     case 'guest': {
-        //       this.guestData = { ...this.guestData, ...data }
+        if (type === 'metadata') {
+          switch (name) {
+            case 'guest': {
+              this.guestData = { ...this.guestData, ...data }
 
-        //       const { width, height } = this.guestData
+              const { width, height } = this.guestData
 
-        //       console.log('***metadata***', this.guestData)
-        //       break
-        //     }
+              console.log('*** metadata*** ', this.guestData)
 
-        //     default:
-        //   }
-        // }
+              this.jitsiApi.resizeLargeVideo(width, height)
+              break
+            }
+
+            default:
+          }
+        }
       } catch (e) {
         // do nothing
       }
@@ -298,8 +300,6 @@ export default {
     onLocalParticipantJoined(p) {
       this.localJoined = true
       this.localParticipant = p
-
-      this.jitsiApi.resizeLargeVideo(360, 640)
     },
 
     onRemoteParticipantJoined(participant) {
