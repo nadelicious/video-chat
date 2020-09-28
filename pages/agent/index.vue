@@ -199,6 +199,9 @@ export default {
               this.guestData = { ...this.guestData, ...data }
 
               const { width, height } = this.guestData
+
+              console.log('***metadata***', this.guestData)
+
               this.jitsiApi.resizeLargeVideo(width, height)
               break
             }
