@@ -186,6 +186,26 @@ export default {
 
     onRemoteParticipantJoined(participant) {
       this.participants = this.participants.concat(participant)
+    },
+
+    onRemoteParticipantLeft(participant) {
+      this.participants = this.participants.filter(
+        (v) => v.id !== participant.id
+      )
+    },
+
+    onLargeVideoChanged(participant) {
+      const participants = this.jitsiApi.getParticipantsInfo()
+
+      if (participants.length) {
+        const localParticipant = participants.find(
+          (v) => v.participantId === this.localParticipant.id
+        )
+
+        if (localParticipant) {
+          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
+        }
+      }
 
       const data = {
         type: 'metadata',
@@ -201,35 +221,6 @@ export default {
         participant.id,
         JSON.stringify(data)
       )
-    },
-
-    onRemoteParticipantLeft(participant) {
-      this.participants = this.participants.filter(
-        (v) => v.id !== participant.id
-      )
-    },
-
-    onLargeVideoChanged(participant) {
-      console.log(
-        '*** onLargeVideoChanged - newly staged participant***',
-        participant
-      )
-      const participants = this.jitsiApi.getParticipantsInfo()
-
-      console.log(
-        '*** onLargeVideoChanged - participants info***',
-        participants
-      )
-
-      if (participants.length) {
-        const localParticipant = participants.find(
-          (v) => v.participantId === this.localParticipant.id
-        )
-
-        if (localParticipant) {
-          this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
-        }
-      }
     },
 
     async findLocation() {
