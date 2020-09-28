@@ -140,7 +140,8 @@ export default {
       },
       interfaceConfigOverwrite: {
         DEFAULT_LOCAL_DISPLAY_NAME: 'agent',
-        DEFAULT_REMOTE_DISPLAY_NAME: 'guest'
+        DEFAULT_REMOTE_DISPLAY_NAME: 'guest',
+        VIDEO_LAYOUT_FIT: 'height'
       }
     }
 
