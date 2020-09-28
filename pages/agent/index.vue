@@ -141,7 +141,7 @@ export default {
       interfaceConfigOverwrite: {
         DEFAULT_LOCAL_DISPLAY_NAME: 'agent',
         DEFAULT_REMOTE_DISPLAY_NAME: 'guest',
-        VIDEO_LAYOUT_FIT: 'width'
+        VIDEO_LAYOUT_FIT: 'height'
       }
     }
 
@@ -193,22 +193,20 @@ export default {
           }
         }
 
-        if (type === 'metadata') {
-          switch (name) {
-            case 'guest': {
-              this.guestData = { ...this.guestData, ...data }
+        // if (type === 'metadata') {
+        //   switch (name) {
+        //     case 'guest': {
+        //       this.guestData = { ...this.guestData, ...data }
 
-              const { width, height } = this.guestData
+        //       const { width, height } = this.guestData
 
-              console.log('***metadata***', this.guestData)
+        //       console.log('***metadata***', this.guestData)
+        //       break
+        //     }
 
-              this.jitsiApi.resizeLargeVideo(width, height)
-              break
-            }
-
-            default:
-          }
-        }
+        //     default:
+        //   }
+        // }
       } catch (e) {
         // do nothing
       }
@@ -300,6 +298,8 @@ export default {
     onLocalParticipantJoined(p) {
       this.localJoined = true
       this.localParticipant = p
+
+      this.jitsiApi.resizeLargeVideo(360, 640)
     },
 
     onRemoteParticipantJoined(participant) {
