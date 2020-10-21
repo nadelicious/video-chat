@@ -202,30 +202,30 @@ export default {
           (v) => v.participantId === this.localParticipant.id
         )
 
-        const remoteParticipant = participants.find(
-          (v) => v.participantId !== this.localParticipant.id
-        )
-
         if (localParticipant) {
           this.jitsiApi.setLargeVideoParticipant(localParticipant.participantId)
         }
 
-        if (remoteParticipant) {
-          const data = {
-            type: 'metadata',
-            name: 'guest',
-            data: {
-              width: this.getDimension().width,
-              height: this.getDimension().height
-            }
-          }
+        // const remoteParticipant = participants.find(
+        //   (v) => v.participantId !== this.localParticipant.id
+        // )
 
-          this.jitsiApi.executeCommand(
-            'sendEndpointTextMessage',
-            remoteParticipant.participantId,
-            JSON.stringify(data)
-          )
-        }
+        // if (remoteParticipant) {
+        //   const data = {
+        //     type: 'metadata',
+        //     name: 'guest',
+        //     data: {
+        //       width: this.getDimension().width,
+        //       height: this.getDimension().height
+        //     }
+        //   }
+
+        //   this.jitsiApi.executeCommand(
+        //     'sendEndpointTextMessage',
+        //     remoteParticipant.participantId,
+        //     JSON.stringify(data)
+        //   )
+        // }
       }
     },
 

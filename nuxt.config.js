@@ -21,9 +21,11 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     // https://beta.meet.jit.si/external_api.js
+    // https://8x8.vc/libs/external_api.min.js
+    // https://meet.jit.si/external_api.js
     script: [
       {
-        src: 'https://meet.jit.si/external_api.js',
+        src: 'https://8x8.vc/libs/external_api.min.js',
         body: true
       }
     ]
